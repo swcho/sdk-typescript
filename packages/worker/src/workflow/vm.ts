@@ -50,6 +50,7 @@ export class VMWorkflowCreator implements WorkflowCreator {
       {
         get(_: any, fn: string) {
           return (...args: any[]) => {
+            console.log('workflowModule', fn)
             context.__TEMPORAL__.args = args;
             return vm.runInContext(`__TEMPORAL__.api.${fn}(...__TEMPORAL__.args)`, context, {
               timeout: isolateExecutionTimeoutMs,

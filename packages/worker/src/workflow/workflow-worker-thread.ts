@@ -28,6 +28,7 @@ let workflowGetter: (runId: string) => Workflow | undefined;
  * Process a `WorkerThreadRequest` and resolve with a `WorkerThreadResponse`.
  */
 async function handleRequest({ requestId, input }: WorkerThreadRequest): Promise<WorkerThreadResponse> {
+  console.log('handleRequest', input.type)
   switch (input.type) {
     case 'init':
       if (input.reuseV8Context) {

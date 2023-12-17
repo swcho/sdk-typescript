@@ -6,6 +6,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "declaration": true,
+    "declarationMap": true
   }
 }

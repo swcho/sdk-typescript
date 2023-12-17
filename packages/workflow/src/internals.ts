@@ -348,6 +348,7 @@ export class Activator implements ActivationHandler {
    * Prevents commands from being added after Workflow completion.
    */
   pushCommand(cmd: coresdk.workflow_commands.IWorkflowCommand, complete = false): void {
+    console.log('==Activator.pushCommand')
     // Only query responses may be sent after completion
     if (this.completed && !cmd.respondToQuery) return;
     this.commands.push(cmd);
@@ -363,6 +364,7 @@ export class Activator implements ActivationHandler {
   }
 
   public async startWorkflowNextHandler({ args }: WorkflowExecuteInput): Promise<any> {
+    console.log('==Activator.startWorkflowNextHandler')
     const { workflow } = this;
     if (workflow === undefined) {
       throw new IllegalStateError('Workflow uninitialized');
@@ -384,6 +386,7 @@ export class Activator implements ActivationHandler {
   }
 
   public startWorkflow(activation: coresdk.workflow_activation.IStartWorkflow): void {
+    console.log('==Activator.startWorkflow', activation.workflowId)
     const execute = composeInterceptors(this.interceptors.inbound, 'execute', this.startWorkflowNextHandler.bind(this));
 
     untrackPromise(
@@ -410,6 +413,7 @@ export class Activator implements ActivationHandler {
     if (!activation.result) {
       throw new TypeError('Got ResolveActivity activation with no result');
     }
+    console.log('==Activator.resolveActivity', activation.seq)
     const { resolve, reject } = this.consumeCompletion('activity', getSeq(activation));
     if (activation.result.completed) {
       const completed = activation.result.completed;
@@ -431,6 +435,7 @@ export class Activator implements ActivationHandler {
   public resolveChildWorkflowExecutionStart(
     activation: coresdk.workflow_activation.IResolveChildWorkflowExecutionStart
   ): void {
+    console.log('==Activator.resolveChildWorkflowExecutionStart', activation.seq)
     const { resolve, reject } = this.consumeCompletion('childWorkflowStart', getSeq(activation));
     if (activation.succeeded) {
       resolve(activation.succeeded.runId);
@@ -462,6 +467,7 @@ export class Activator implements ActivationHandler {
   }
 
   public resolveChildWorkflowExecution(activation: coresdk.workflow_activation.IResolveChildWorkflowExecution): void {
+    console.log('==Activator.resolveChildWorkflowExecution', activation.seq)
     if (!activation.result) {
       throw new TypeError('Got ResolveChildWorkflowExecution activation with no result');
     }

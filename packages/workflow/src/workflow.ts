@@ -137,6 +137,7 @@ const validateLocalActivityOptions = validateActivityOptions;
 function scheduleActivityNextHandler({ options, args, headers, seq, activityType }: ActivityInput): Promise<unknown> {
   const activator = getActivator();
   validateActivityOptions(options);
+  console.log('==scheduleActivityNextHandler', seq, activityType)
   return new Promise((resolve, reject) => {
     const scope = CancellationScope.current();
     if (scope.consideredCancelled) {
@@ -261,6 +262,7 @@ export function scheduleActivity<R>(activityType: string, args: any[], options: 
   const seq = activator.nextSeqs.activity++;
   const execute = composeInterceptors(activator.interceptors.outbound, 'scheduleActivity', scheduleActivityNextHandler);
 
+  console.log('==scheduleActivity', activityType)
   return execute({
     activityType,
     headers: {},
@@ -522,6 +524,7 @@ export function proxyActivities<A = UntypedActivities>(options: ActivityOptions)
   }
   // Validate as early as possible for immediate user feedback
   validateActivityOptions(options);
+  console.log('==proxyActivities')
   return new Proxy(
     {},
     {
@@ -529,6 +532,7 @@ export function proxyActivities<A = UntypedActivities>(options: ActivityOptions)
         if (typeof activityType !== 'string') {
           throw new TypeError(`Only strings are supported for Activity types, got: ${String(activityType)}`);
         }
+        console.log('==proxyActivities', activityType)
         return function activityProxyFunction(...args: unknown[]): Promise<unknown> {
           return scheduleActivity(activityType, args, options);
         };
